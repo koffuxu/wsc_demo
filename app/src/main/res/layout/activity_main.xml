@@ -19,5 +19,57 @@
         android:text="手机端"
         android:onClick="startConnectSpot"
         android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ToggleButton
+            android:id="@+id/tb_up_eye"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="关闭上眼睛灯"
+            android:textOn="打开上眼睛灯"
+            />
+        <ToggleButton
+            android:id="@+id/tb_down_eye"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="关闭下眼睛灯"
+            android:textOn="打开下眼睛灯"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/mouse_on"
+            android:text="打开嘴巴灯"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setMouseOn"
+            />
+        <Button
+            android:id="@+id/mouse_breathe"
+            android:text="嘴巴灯呼吸"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setMouseBreathe"
+            />
+        <Button
+            android:id="@+id/mouse_off"
+            android:text="关闭嘴巴灯"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setMouseOff"
+            />
+    </LinearLayout>
+
+
 
 </LinearLayout>

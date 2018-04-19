@@ -69,17 +69,17 @@ public class DeviceActivity extends BaseActivity {
             super.handleMessage(msg);
             if (msg.what == MSG_FILE_RECEIVER_INIT_SUCCESS) {
                 //告知发送端，接收端初始化完毕
-                tvCommonInfo.append("Client:--->>>"+CMD_FILE_RECEIVER_INIT_SUCCESS+"\n");
+                refreshTextView("Client:--->>>"+CMD_FILE_RECEIVER_INIT_SUCCESS+"\n");
                 sendInitSuccessToFileSender();
             } else if (msg.what == MSG_SET_STATUS) {
                 //设置当前状态
-                tvCommonInfo.append(msg.obj.toString()+"\n");
+                refreshTextView(msg.obj.toString()+"\n");
             }  else if(msg.what == MSG_SSID_CONTENT_ACK_OK){
                 LogUtils.i("HOST收到SSID和密码正确，即将连接网络\n");
-                tvCommonInfo.append("Client: <<<---CMD_SSID_CONTENT_ACK_OK\n");
+                refreshTextView("Client: <<<---CMD_SSID_CONTENT_ACK_OK\n");
             } else if(msg.what == MSG_INIT_ACKOK){
-                tvCommonInfo.append("Client: <<<---CMD_INIT_ACK_OK\n");
-                tvCommonInfo.append("Client:--->>>{SSID CONTENT}\n");
+                refreshTextView("Client: <<<---CMD_INIT_ACK_OK\n");
+                refreshTextView("Client:--->>>{SSID CONTENT}\n");
                 sendSsidConent((msg.obj).toString());
             }
         }
@@ -101,11 +101,11 @@ public class DeviceActivity extends BaseActivity {
         registerWifiReceiver();
         mWifiMgr = new WifiMgr(getContext());
         if (mWifiMgr.isWifiEnabled()) {
-            tvCommonInfo.append("Init Data:正在扫描可用WiFi...\n");
+            refreshTextView("Init Data:正在扫描可用WiFi...\n");
             mWifiMgr.startScan();
             mWifiScanning = true;
         } else {
-            tvCommonInfo.append("正在打开WiFi...\n");
+            refreshTextView("正在打开WiFi...\n");
             mWifiMgr.openWifi();
         }
 
@@ -121,7 +121,7 @@ public class DeviceActivity extends BaseActivity {
     //onClick Lisenter
     public void btScannerWifi(View v){
         if (mWifiMgr.isWifiEnabled()) {
-            tvCommonInfo.append("Button On Click 正在扫描可用WiFi...\n");
+            refreshTextView("Button On Click 正在扫描可用WiFi...\n");
             mWifiMgr.startScan();
         } else {
             mWifiMgr.openWifi();
@@ -142,7 +142,9 @@ public class DeviceActivity extends BaseActivity {
         closeUdpSocket();
 
         //清除WiFi网络
-        mWifiMgr.clearWifiConfig();
+        //mWifiMgr.clearWifiConfig();
+        //清除指定的AP Host
+        mWifiMgr.clearWifiConfig(HOTSPOT_SSID);
 
         unregisterReceiver(mWifiBroadcaseReceiver);
 
@@ -181,14 +183,14 @@ public class DeviceActivity extends BaseActivity {
         @Override
         public void onWifiEnabled() {
             //WiFi已开启，开始扫描可用WiFi
-            //tvCommonInfo.append("正在扫描可用WiFi...\n");
+            //refreshTextView("正在扫描可用WiFi...\n");
             //mWifiMgr.startScan();
         }
 
         @Override
         public void onWifiDisabled() {
             //WiFi已关闭，清除可用WiFi列表
-            tvCommonInfo.append("onWifiDisabled");
+            refreshTextView("onWifiDisabled");
             //mSelectedSSID = "";
             //mScanResults.clear();
             //setupWifiAdapter();
@@ -197,32 +199,32 @@ public class DeviceActivity extends BaseActivity {
 
         @Override
         public void onScanResultsAvailable(List<ScanResult> scanResults) {
-            tvCommonInfo.append("WiFi Scan finished");
+            refreshTextView("WiFi Scan finished");
             //扫描周围可用WiFi成功，设置可用WiFi列表
             /*mScanResults.clear();
             mScanResults.addAll(scanResults);
             setupWifiAdapter();*/
             for(ScanResult item : scanResults){
-                tvCommonInfo.append(item.SSID);
+                refreshTextView(item.SSID);
                 if(item.SSID !=null && item.SSID.equals(HOTSPOT_SSID)){
-                    tvCommonInfo.append(" ----->找到YJ263热点...\n");
+                    refreshTextView(" ----->找到YJ263热点...\n");
                     mIsFoundHotspot = true;
                     try {
-                        tvCommonInfo.append("正在连接热点...\n");
+                        refreshTextView("正在连接热点...\n");
                         mWifiMgr.connectWifi(HOTSPOT_PW, item);
                         break;
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }else {
-                    tvCommonInfo.append(" ----->mismatch\n");
+                    refreshTextView(" ----->mismatch\n");
                 }
             }
         }
 
         @Override
         public void onWifiConnected(String connectedSSID) {
-            tvCommonInfo.append("Wifi连接"+connectedSSID+"成功...\n");
+            refreshTextView("Wifi连接"+connectedSSID+"成功...\n");
             //判断指定WiFi是否连接成功
             if (connectedSSID.equals(HOTSPOT_SSID) && !mIsSendInitOrder) {
                 //告知发送端，接收端初始化完毕
@@ -238,7 +240,7 @@ public class DeviceActivity extends BaseActivity {
 
         @Override
         public void onWifiDisconnected() {
-            tvCommonInfo.append("Wifi断开...\n");
+            refreshTextView("Wifi断开...\n");
 
         }
 
@@ -349,5 +351,13 @@ public class DeviceActivity extends BaseActivity {
             }
         }).start();
 
+    }
+
+  private void refreshTextView(String msg) {
+        tvCommonInfo.append(msg);
+        int offset = tvCommonInfo.getLineCount() * tvCommonInfo.getLineHeight();
+        if (offset > (tvCommonInfo.getHeight() - tvCommonInfo.getLineHeight() - 20)) {
+            tvCommonInfo.scrollTo(0, offset - tvCommonInfo.getHeight() + tvCommonInfo.getLineHeight() + 20);
+        }
     }
 }

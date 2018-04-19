@@ -37,4 +37,5 @@ dependencies {
 
     //Gson：https://github.com/google/gson
     compile 'com.google.code.gson:gson:+'
+    compile files('libs/framework-bbt.jar')
 }

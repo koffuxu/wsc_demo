@@ -21,17 +21,17 @@
             android:text="连接WIFI"
             />
     </LinearLayout>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        >
-        <TextView
-            android:layout_margin="10dp"
-            android:id="@+id/tv_common_info"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
-    </ScrollView>
+    <TextView
+        android:layout_margin="10dp"
+        android:id="@+id/tv_common_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:scrollbarFadeDuration="2000"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbars="vertical"
+        />
+
 
 </LinearLayout>
