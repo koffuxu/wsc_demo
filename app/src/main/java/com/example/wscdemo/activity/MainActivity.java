@@ -1,10 +1,13 @@
 package com.example.wscdemo.activity;
 
+import android.bbt.IBbtDaemonService;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
@@ -15,6 +18,7 @@ import com.example.wscdemo.base.BaseActivity;
 import com.example.wscdemo.wifitools.WifiMgr;
 
 import java.util.List;
+
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "wsc";
@@ -43,14 +47,16 @@ public class MainActivity extends BaseActivity {
         wifiMgr = new WifiMgr(this);
 //        Log.e(TAG, "initData: exception:"+nullListtest.get(0) );
         getVolume();
-        defaultWiFi();
+        //defaultWiFi();
 
         upEyeTb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    startActivity();
+                    Log.i(TAG, "onCheckedChanged: start play");
+                    //startActivity();
                     BbtManager.setLedStatus(1,0,0,0);
+                    playSound();
                 }else {
                     BbtManager.setLedStatus(0,0,0,0);
                 }
@@ -69,6 +75,16 @@ public class MainActivity extends BaseActivity {
         });
 
 
+    }
+
+    private void playSound() {
+        IBinder b = ServiceManager.getService("bbtdaemon");
+        IBbtDaemonService service = IBbtDaemonService.Stub.asInterface(b);
+        try {
+            service.playSoundRes(0);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
 
